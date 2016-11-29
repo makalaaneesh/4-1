@@ -397,22 +397,68 @@ public:
 	void encrypt(){
 		//input has to be 64 bits. hence 8 characters. (1 extra for \0)
 		
-		int index = 0;
+		// initial permutation
+		char ip_text[9];
+		charset input(input_text, 9);
+		charset output(ip_text, 9);
 		int i;
+		for(i = 0; i< 64; i++){
+			int bit_to_get = IP[i];
+			cout<<input.get_bit(bit_to_get);
+			if(input.get_bit(bit_to_get)){
+				output.set_bit(i+1);
+			}
+			else{
+				output.reset_bit(i+1);
+			}
+
+		}
+
+
+
+		int index = 0;
 		for(i = 0; i<4; i++){
-			left[index++] = input_text[i];
+			left[index++] = ip_text[i];
 		}
 		left[index] = '\0';
 		index = 0;
 		for(i = 4; i<8;i++){
-			right[index++] = input_text[i];
+			right[index++] = ip_text[i];
 		}
 		right[index] = '\0';
+		
+
+
 
 		for(i = 0; i< 16; i++){
 			round(i);		
 		}
 
+		
+		char output[9];
+		for(i = 0; i< 4; i++){
+			output[i] = left[i];
+		}
+		for(i = 0; i< 4; i++){
+			output[i+4] = right[i];
+		}
+		
+		//final permutation
+		char ip_text[9];
+		charset input(input_text, 9);
+		charset output(ip_text, 9);
+		int i;
+		for(i = 0; i< 64; i++){
+			int bit_to_get = IP[i];
+			cout<<input.get_bit(bit_to_get);
+			if(input.get_bit(bit_to_get)){
+				output.set_bit(i+1);
+			}
+			else{
+				output.reset_bit(i+1);
+			}
+
+		}
 
 
 		cout<<left<<right;
