@@ -90,3 +90,27 @@ print "Encrypted string: ", encrypted
 cipher = AES.new(secret,AES.MODE_CFB, IV = IV)
 decrypted = aesDecrypt(cipher, encrypted)
 print "Decrypted string :", decrypted
+
+
+
+'''
+Digital Signature
+'''
+
+
+from Crypto.Hash import SHA256
+from Crypto.PublicKey import RSA
+from Crypto import Random
+
+
+random_generator = Random.new().read
+
+key = RSA.generate(1024, random_generator)
+hash_value = SHA256.new(text).digest()
+signature = key.sign(hash_value, '')# signed with private key
+
+#public key is sent over the network. So is the signature
+publickey = key.publickey().exportKey("PEM")
+rsakey = RSA.importKey(publickey)
+verified_value = rsakey.publickey().verify(hash_value, signature)
+print "VERIFIED VIA DIGITAL SIGNATURE", verified_value
